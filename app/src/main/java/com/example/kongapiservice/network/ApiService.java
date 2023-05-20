@@ -22,14 +22,19 @@ public interface ApiService {
             .retryOnConnectionFailure(true)
             .addInterceptor(loggingInterCepter);
 
-    ApiService apiService = new Retrofit.Builder().baseUrl("http://localhost:8000")
+    ApiService apiService = new Retrofit.Builder().baseUrl("http://192.168.1.120:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okBuilder.build())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+
             .build()
             .create(ApiService.class);
 
-    @POST("/login")
+    @POST("/userServices/login")
     Single<LogInResponse> login(@Query(value = "email") String email, @Query(value = "password") String password);
+
+    @POST("/userServices/register")
+    Single<LogInResponse> register(@Query(value = "email") String email, @Query(value = "password") String password,
+                                   @Query(value = "name") String name);
 
 }
