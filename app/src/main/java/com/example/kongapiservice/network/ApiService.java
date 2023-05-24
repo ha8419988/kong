@@ -1,6 +1,7 @@
 package com.example.kongapiservice.network;
 
 import com.example.kongapiservice.network.reponse.CategoryListResponse;
+import com.example.kongapiservice.network.request.EditProfileRequest;
 import com.example.kongapiservice.network.request.LoginRequest;
 import com.example.kongapiservice.network.reponse.LogInResponse;
 import com.example.kongapiservice.network.request.RegisterRequest;
@@ -18,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -49,4 +51,13 @@ public interface ApiService {
 
     @GET("/productServices/category/{id}")
     Call<CategoryListResponse> getCategoryDetail(@Path("id") String id);
+
+    @GET("/userServices/{id}")
+    Call<CategoryListResponse> getProfile(@Path("id") String id);
+
+    @PUT("/userServices/{id}")
+    Call<CategoryListResponse> editProfile(@Path("id") String id, @Body EditProfileRequest request);
+
+
+
 }

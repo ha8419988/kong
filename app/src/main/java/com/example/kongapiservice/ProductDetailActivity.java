@@ -27,6 +27,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ListProductAdapter adapter;
     RecyclerView rcvCategory;
     ImageView imgEmpty;
+    ImageView imgBack;
     TextView tvNameCategory;
 
     @Override
@@ -35,7 +36,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_detail);
         rcvCategory = findViewById(R.id.recycle_category);
         imgEmpty = findViewById(R.id.imgEmpty);
+        imgBack = findViewById(R.id.imgBack);
         tvNameCategory = findViewById(R.id.tvNameCategory);
+
+
+        imgBack.setOnClickListener(view -> finish());
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
