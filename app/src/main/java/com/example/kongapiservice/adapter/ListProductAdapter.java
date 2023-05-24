@@ -14,22 +14,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kongapiservice.ProductDetailActivity;
 import com.example.kongapiservice.R;
 import com.example.kongapiservice.model.ItemListProduct;
+import com.example.kongapiservice.network.reponse.CategoryListResponse;
+import com.example.kongapiservice.ui.Constant;
 
 import java.util.List;
 
 public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.ListProductViewHolder> {
     Context mContext;
-    List<ItemListProduct> mList;
+    List<CategoryListResponse> mList;
+    List<CategoryListResponse.Product> mListProduct;
 
 
     public void setmContext(Context mContext) {
         this.mContext = mContext;
     }
 
-    public void setData(List<ItemListProduct> mList) {
+    public void setData(List<CategoryListResponse> mList) {
         this.mList = mList;
         notifyDataSetChanged();
     }
+
+    public void setDataCategoryDetail(List<CategoryListResponse.Product> mList) {
+        this.mListProduct = mList;
+        notifyDataSetChanged();
+    }
+
 
     @NonNull
     @Override
@@ -40,22 +49,34 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ListProductAdapter.ListProductViewHolder holder, int position) {
-        ItemListProduct itemListProduct = mList.get(position);
-
-        if (itemListProduct == null) {
-            return;
+        String itemName = "";
+        if (mListProduct != null) {
+            CategoryListResponse.Product itemProduct = mListProduct.get(position);
+            itemName = itemProduct.getName();
+        } else if (mList != null) {
+            CategoryListResponse itemListProduct = mList.get(position);
+            itemName = itemListProduct.getName();
+            holder.clList.setOnClickListener(view -> {
+                Intent intent = new Intent(mContext, ProductDetailActivity.class);
+                intent.putExtra(Constant.ID_CATEGORY, itemListProduct.getId());
+                intent.putExtra(Constant.NAME_CATEGORY, itemListProduct.getName());
+                mContext.startActivity(intent);
+            });
         }
-        holder.tvName.setText(itemListProduct.getName());
-        holder.tvDescription.setText(itemListProduct.getDescription());
-        holder.clList.setOnClickListener(view -> {
-            mContext.startActivity(new Intent(mContext, ProductDetailActivity.class));
 
-        });
+        holder.tvName.setText(itemName);
+
     }
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        if (mList != null)
+            return mList.size();
+        else if (mListProduct != null
+        ) {
+            return mListProduct.size();
+        }
+        return 0;
     }
 
     public class ListProductViewHolder extends RecyclerView.ViewHolder {

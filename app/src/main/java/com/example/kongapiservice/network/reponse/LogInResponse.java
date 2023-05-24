@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class LogInResponse {
     @SerializedName("status")
-    private String status;
+    private int status;
     @SerializedName("data")
     private Data data;
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
@@ -17,17 +17,35 @@ public class LogInResponse {
     }
 
     public class Data {
-        @SerializedName("access_token")
-        private String accessToken;
-        @SerializedName("user_id")
-        private Long idUser;
+        @SerializedName("token")
+        private String token;
+        @SerializedName("email")
+        private String email;
+        @SerializedName("name")
+        private String name;
 
-        public String getAccessToken() {
-            return accessToken;
+        public String getToken() {
+            return token;
         }
 
-        public Long getIdUser() {
-            return idUser;
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }

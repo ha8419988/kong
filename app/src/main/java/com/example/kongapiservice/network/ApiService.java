@@ -1,16 +1,24 @@
 package com.example.kongapiservice.network;
 
+import com.example.kongapiservice.network.reponse.CategoryListResponse;
+import com.example.kongapiservice.network.request.LoginRequest;
 import com.example.kongapiservice.network.reponse.LogInResponse;
+import com.example.kongapiservice.network.request.RegisterRequest;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.core.Single;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
@@ -22,7 +30,7 @@ public interface ApiService {
             .retryOnConnectionFailure(true)
             .addInterceptor(loggingInterCepter);
 
-    ApiService apiService = new Retrofit.Builder().baseUrl("http://192.168.1.120:8000")
+    ApiService apiService = new Retrofit.Builder().baseUrl("http://172.168.10.211:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okBuilder.build())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
@@ -31,10 +39,14 @@ public interface ApiService {
             .create(ApiService.class);
 
     @POST("/userServices/login")
-    Single<LogInResponse> login(@Query(value = "email") String email, @Query(value = "password") String password);
+    Call<LogInResponse> login(@Body LoginRequest request);
 
     @POST("/userServices/register")
-    Single<LogInResponse> register(@Query(value = "email") String email, @Query(value = "password") String password,
-                                   @Query(value = "name") String name);
+    Call<LogInResponse> register(@Body RegisterRequest request);
 
+    @GET("/productServices/category")
+    Call<List<CategoryListResponse>> getCategoryList();
+
+    @GET("/productServices/category/{id}")
+    Call<CategoryListResponse> getCategoryDetail(@Path("id") String id);
 }

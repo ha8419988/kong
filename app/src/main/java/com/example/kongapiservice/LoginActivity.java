@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,13 +12,12 @@ import android.widget.Toast;
 
 import com.example.kongapiservice.network.ApiService;
 import com.example.kongapiservice.network.reponse.LogInResponse;
+import com.example.kongapiservice.network.request.LoginRequest;
 import com.example.kongapiservice.register.RegisterActivity;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -38,28 +38,22 @@ public class LoginActivity extends AppCompatActivity {
 
 
         btnLogin.setOnClickListener(view -> {
-            ApiService.apiService.login("hoanganh84981@example.com", "11111111").subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new SingleObserver<LogInResponse>() {
-                        @Override
-                        public void onSubscribe(@NonNull Disposable d) {
-//                            Toast.makeText(MainActivity.this,"okay",Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest("hoanganh84981@example.com", "11111111"));
+            call.enqueue(new Callback<LogInResponse>() {
+                @Override
+                public void onResponse(Call<LogInResponse> call, Response<LogInResponse> response) {
+                    if (response.raw().code() == 200) {
+                        new Handler().postDelayed(() ->
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class)), 500);
+                    }
+                }
 
-                        }
+                @Override
+                public void onFailure(Call<LogInResponse> call, Throwable t) {
+                    Toast.makeText(LoginActivity.this, "fail", Toast.LENGTH_SHORT).show();
 
-                        @Override
-                        public void onSuccess(@NonNull LogInResponse logInResponse) {
-                            Toast.makeText(LoginActivity.this, "okay1", Toast.LENGTH_SHORT).show();
-
-                        }
-
-                        @Override
-                        public void onError(@NonNull Throwable e) {
-                            Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
+                }
+            });
         });
         tvRegister.setOnClickListener(view -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
