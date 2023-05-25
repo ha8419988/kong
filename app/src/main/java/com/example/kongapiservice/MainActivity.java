@@ -1,12 +1,28 @@
 package com.example.kongapiservice;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.example.kongapiservice.network.ApiService;
+import com.example.kongapiservice.network.reponse.CategoryListResponse;
+import com.example.kongapiservice.network.reponse.ImageResponse;
+import com.example.kongapiservice.network.request.ImageRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -16,10 +32,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kongapiservice.databinding.ActivityMainBinding;
 
+import java.io.File;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+    private final int PICK_IMAGE_REQUEST = 71;
+    private Uri saveUri;
+    private String filePath;
 
 
     @Override
@@ -33,8 +65,7 @@ public class MainActivity extends AppCompatActivity {
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                uploadImage();
             }
         });
         DrawerLayout drawer = binding.drawerLayout;
@@ -50,12 +81,104 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
+    private void uploadImage() {
+
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent, PICK_IMAGE_REQUEST);
+
+//        Intent intent = new Intent(Intent.ACTION_PICK);
+//        intent.setType("image/*");
+////        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(Intent.createChooser(intent, "Chọn Ảnh "), PICK_IMAGE_REQUEST);
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            saveUri = data.getData();
+//            Uri selectedImage = data.getData();
+            filePath = RealPathUtil.getRealPath(this, saveUri);
+
+
+            File file = new File(filePath);
+            RequestBody requestFile =
+                    RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+
+// MultipartBody.Part is used to send also the actual file name
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+            ApiService.apiService.postImage(body).subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ImageResponse>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull ImageResponse imageResponse) {
+                            Toast.makeText(MainActivity.this, imageResponse.getData().getUrl(), Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
+//            Call<ImageResponse> call = ApiService.apiService.postImage(body);
+//            call.enqueue(new Callback<ImageResponse>() {
+//                @Override
+//                public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
+//                    if (
+//                            response.body().status == 200
+//                    )   {
+//                        Toast.makeText(MainActivity.this, response.body().getData().getUrl(), Toast.LENGTH_SHORT).show();
+//
+//                    }
+//
+//                }
+//
+//                @Override
+//                public void onFailure(Call<ImageResponse> call, Throwable t) {
+//                    Toast.makeText(MainActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//                    Log.d("AAAA", t.getLocalizedMessage());
+//                }
+//            });
+        }
+    }
+//    public String getPath(Uri uri) {
+//
+////        String[] projection = { MediaStore.Images.Media.DATA };
+////        Cursor cursor = managedQuery(uri, projection, null, null, null);
+////        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+////        cursor.moveToFirst();
+////
+////        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+////        String picturePath = cursor.getString(columnIndex);
+////        cursor.close();
+////
+////
+////        return cursor.getString(column_index);
+//    }
 
     @Override
     public boolean onSupportNavigateUp() {

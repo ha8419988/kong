@@ -1,13 +1,23 @@
 package com.example.kongapiservice;
 
+import static android.content.Intent.ACTION_PICK;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,10 +25,21 @@ import android.widget.Toast;
 import com.example.kongapiservice.adapter.ListProductAdapter;
 import com.example.kongapiservice.network.ApiService;
 import com.example.kongapiservice.network.reponse.CategoryListResponse;
+import com.example.kongapiservice.network.reponse.ImageResponse;
 import com.example.kongapiservice.ui.Constant;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,6 +50,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     ImageView imgEmpty;
     ImageView imgBack;
     TextView tvNameCategory;
+    private final int PICK_IMAGE_REQUEST = 71;
+    private Uri saveUri;
+    private String filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +64,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         tvNameCategory = findViewById(R.id.tvNameCategory);
 
 
-        imgBack.setOnClickListener(view -> finish());
+        imgBack.setOnClickListener(view -> {
+            uploadImage();
+        });
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -72,11 +98,77 @@ public class ProductDetailActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<CategoryListResponse> call, Throwable t) {
                     Toast.makeText(ProductDetailActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    Log.d("AAA", t.getLocalizedMessage());
 
                 }
             });
         }
 
+    }
+
+    private void uploadImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Chọn Ảnh "), PICK_IMAGE_REQUEST);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            saveUri = data.getData();
+//            Uri selectedImage = data.getData();
+
+            final InputStream imageStream;
+            try {
+                imageStream = getContentResolver().openInputStream(saveUri);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+//            image_view.setImageBitmap(selectedImage);
+            imgEmpty.setImageBitmap(selectedImage);
+
+            filePath = RealPathUtil.getRealPath(this, saveUri);
+//            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+//            imgEmpty.setImageBitmap(bitmap);
+            Button btn = findViewById(R.id.btnTest);
+            btn.setOnClickListener(view -> {
+                File file = new File(filePath);
+                RequestBody requestFile =
+                        RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+
+// MultipartBody.Part is used to send also the actual file name
+                MultipartBody.Part body =
+                        MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+                ApiService.apiService.postImage(body).subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<ImageResponse>() {
+                            @Override
+                            public void onSubscribe(@NonNull Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(@NonNull ImageResponse imageResponse) {
+                                Toast.makeText(ProductDetailActivity.this, imageResponse.getData().getUrl(), Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+
+            });
+        }
     }
 }
