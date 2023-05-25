@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -38,7 +39,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
         btnLogin.setOnClickListener(view -> {
-            Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest("hoanganh84981@example.com", "11111111"));
+//            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+
+            Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest("hoanganh8498@gmail.com", "11111111"));
             call.enqueue(new Callback<LogInResponse>() {
                 @Override
                 public void onResponse(Call<LogInResponse> call, Response<LogInResponse> response) {
@@ -51,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<LogInResponse> call, Throwable t) {
                     Toast.makeText(LoginActivity.this, "fail", Toast.LENGTH_SHORT).show();
-
+//                    Log.d("AAAA", t.getLocalizedMessage());
                 }
             });
         });

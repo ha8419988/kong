@@ -1,5 +1,7 @@
 package com.example.kongapiservice;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -7,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -33,6 +36,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.kongapiservice.databinding.ActivityMainBinding;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -107,62 +113,62 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
-            saveUri = data.getData();
-//            Uri selectedImage = data.getData();
-            filePath = RealPathUtil.getRealPath(this, saveUri);
+                saveUri = data.getData();
+    //            Uri selectedImage = data.getData();
+                filePath =copyFileToInternal(this, saveUri);
 
 
-            File file = new File(filePath);
-            RequestBody requestFile =
-                    RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                File file = new File(filePath);
+                RequestBody requestFile =
+                        RequestBody.create(MediaType.parse("image/*"), file);
 
 
-// MultipartBody.Part is used to send also the actual file name
-            MultipartBody.Part body =
-                    MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-            ApiService.apiService.postImage(body).subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ImageResponse>() {
-                        @Override
-                        public void onSubscribe(@NonNull Disposable d) {
+    // MultipartBody.Part is used to send also the actual file name
+                MultipartBody.Part body =
+                        MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+                ApiService.apiService.postImage(body).subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<ImageResponse>() {
+                            @Override
+                            public void onSubscribe(@NonNull Disposable d) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onNext(@NonNull ImageResponse imageResponse) {
-                            Toast.makeText(MainActivity.this, imageResponse.getData().getUrl(), Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onNext(@NonNull ImageResponse imageResponse) {
+                                Toast.makeText(MainActivity.this, imageResponse.getData().getUrl(), Toast.LENGTH_SHORT).show();
 
-                        }
+                            }
 
-                        @Override
-                        public void onError(@NonNull Throwable e) {
+                            @Override
+                            public void onError(@NonNull Throwable e) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onComplete() {
+                            @Override
+                            public void onComplete() {
 
-                        }
-                    });
+                            }
+                        });
 
-//            Call<ImageResponse> call = ApiService.apiService.postImage(body);
-//            call.enqueue(new Callback<ImageResponse>() {
-//                @Override
-//                public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
-//                    if (
-//                            response.body().status == 200
-//                    )   {
-//                        Toast.makeText(MainActivity.this, response.body().getData().getUrl(), Toast.LENGTH_SHORT).show();
-//
-//                    }
-//
-//                }
-//
-//                @Override
-//                public void onFailure(Call<ImageResponse> call, Throwable t) {
-//                    Toast.makeText(MainActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-//                    Log.d("AAAA", t.getLocalizedMessage());
-//                }
-//            });
+    //            Call<ImageResponse> call = ApiService.apiService.postImage(body);
+    //            call.enqueue(new Callback<ImageResponse>() {
+    //                @Override
+    //                public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
+    //                    if (
+    //                            response.body().status == 200
+    //                    )   {
+    //                        Toast.makeText(MainActivity.this, response.body().getData().getUrl(), Toast.LENGTH_SHORT).show();
+    //
+    //                    }
+    //
+    //                }
+    //
+    //                @Override
+    //                public void onFailure(Call<ImageResponse> call, Throwable t) {
+    //                    Toast.makeText(MainActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    //                    Log.d("AAAA", t.getLocalizedMessage());
+    //                }
+    //            });
         }
     }
 //    public String getPath(Uri uri) {
@@ -185,5 +191,31 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    public  String copyFileToInternal(Context context, Uri fileUri) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Cursor cursor = context.getContentResolver().query(fileUri, new String[]{OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE}, null, null);
+            cursor.moveToFirst();
+
+            @SuppressLint("Range") String displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+            File file = new File(context.getFilesDir() + "/" + displayName);
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
+                byte buffers[] = new byte[1024];
+                int read;
+                while ((read = inputStream.read(buffers)) != -1) {
+                    fileOutputStream.write(buffers, 0, read);
+                }
+                inputStream.close();
+                fileOutputStream.close();
+                return file.getPath();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

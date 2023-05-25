@@ -1,26 +1,20 @@
 package com.example.kongapiservice;
 
-import static android.content.Intent.ACTION_PICK;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kongapiservice.adapter.ListProductAdapter;
 import com.example.kongapiservice.network.ApiService;
@@ -31,7 +25,6 @@ import com.example.kongapiservice.ui.Constant;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -144,31 +137,32 @@ public class ProductDetailActivity extends AppCompatActivity {
 // MultipartBody.Part is used to send also the actual file name
                 MultipartBody.Part body =
                         MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-                ApiService.apiService.postImage(body).subscribeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<ImageResponse>() {
-                            @Override
-                            public void onSubscribe(@NonNull Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(@NonNull ImageResponse imageResponse) {
-                                Toast.makeText(ProductDetailActivity.this, imageResponse.getData().getUrl(), Toast.LENGTH_SHORT).show();
-
-                            }
-
-                            @Override
-                            public void onError(@NonNull Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
-
+//                ApiService.apiService.postImage(body).subscribeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(new Observer<ImageResponse>() {
+//                            @Override
+//                            public void onSubscribe(@NonNull Disposable d) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onNext(@NonNull ImageResponse imageResponse) {
+//                                Toast.makeText(ProductDetailActivity.this, imageResponse.getData().getUrl(), Toast.LENGTH_SHORT).show();
+//
+//                            }
+//
+//                            @Override
+//                            public void onError(@NonNull Throwable e) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onComplete() {
+//
+//                            }
+//                        });
+//
             });
-        }
+
+            }
     }
 }
