@@ -2,6 +2,7 @@ package com.example.kongapiservice.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,12 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
                 mContext.startActivity(intent);
             });
         }
+        holder.clList.setOnCreateContextMenuListener((contextMenu, view, contextMenuInfo) -> {
+            contextMenu.setHeaderTitle("Chọn Hành Động");
+                contextMenu.add(0, 0,position, Constant.UPDATE);
+                contextMenu.add(0, 0, position, Constant.DELETE);
+//                contextMenu.
+        });
 
         holder.tvName.setText(itemName);
 
@@ -91,10 +98,16 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
             tvName = itemView.findViewById(R.id.name);
             tvDescription = itemView.findViewById(R.id.des);
             clList = itemView.findViewById(R.id.clItemList);
-
-//            clList.setOnClickListener(view -> {
-//                mContext.startActivity(new Intent(mContext, ProductDetailActivity.class));
+//
+//            clList.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+//                @Override
+//                public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+//
+//                }
 //            });
+
         }
+
+
     }
 }

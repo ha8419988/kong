@@ -38,7 +38,7 @@ public interface ApiService {
             .retryOnConnectionFailure(true)
             .addInterceptor(loggingInterCepter);
 
-    ApiService apiService = new Retrofit.Builder().baseUrl("http://192.168.1.49:8000")
+    ApiService apiService = new Retrofit.Builder().baseUrl("http://172.168.10.211:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okBuilder.build())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
