@@ -37,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductDetailActivity extends AppCompatActivity {
+public class ProductDetailActivity extends AppCompatActivity implements ListProductAdapter.sendNameCategory {
     private ListProductAdapter adapter;
     RecyclerView rcvCategory;
     ImageView imgEmpty;
@@ -55,10 +55,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         imgEmpty = findViewById(R.id.imgEmpty);
         imgBack = findViewById(R.id.imgBack);
         tvNameCategory = findViewById(R.id.tvNameCategory);
+        adapter = new ListProductAdapter(ProductDetailActivity.this,this);
 
 
         imgBack.setOnClickListener(view -> {
-            uploadImage();
+           finish();
         });
 
         Bundle extras = getIntent().getExtras();
@@ -72,7 +73,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<CategoryListResponse> call, Response<CategoryListResponse> response) {
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(ProductDetailActivity.this, 2);
-                    adapter = new ListProductAdapter();
                     if (response.body().product.size() > 0) {
                         rcvCategory.setVisibility(View.VISIBLE);
                         imgEmpty.setVisibility(View.GONE);
@@ -109,5 +109,10 @@ public class ProductDetailActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void sendName(String name) {
+
     }
 }

@@ -21,9 +21,17 @@ import com.example.kongapiservice.ui.Constant;
 import java.util.List;
 
 public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.ListProductViewHolder> {
+
     Context mContext;
+
+    public ListProductAdapter(Context mContext, ListProductAdapter.sendNameCategory sendNameCategory) {
+        this.mContext = mContext;
+        this.sendNameCategory = sendNameCategory;
+    }
+
     List<CategoryListResponse> mList;
     List<CategoryListResponse.Product> mListProduct;
+    sendNameCategory sendNameCategory;
 
 
     public void setmContext(Context mContext) {
@@ -64,11 +72,16 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
                 mContext.startActivity(intent);
             });
         }
-        holder.clList.setOnCreateContextMenuListener((contextMenu, view, contextMenuInfo) -> {
-            contextMenu.setHeaderTitle("Chọn Hành Động");
-                contextMenu.add(0, 0,position, Constant.UPDATE);
-                contextMenu.add(0, 0, position, Constant.DELETE);
-//                contextMenu.
+//        holder.clList.setOnCreateContextMenuListener((contextMenu, view, contextMenuInfo) -> {
+//            contextMenu.setHeaderTitle("Chọn Hành Động");
+//            contextMenu.add(0, 0, position, Constant.UPDATE);
+//            contextMenu.add(0, 0, position, Constant.DELETE);
+////                contextMenu.
+//        });
+        String finalItemName = itemName;
+        holder.clList.setOnLongClickListener(view -> {
+            sendNameCategory.sendName(finalItemName);
+            return true;
         });
 
         holder.tvName.setText(itemName);
@@ -109,5 +122,9 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         }
 
 
+    }
+
+    public interface sendNameCategory {
+        void sendName(String name);
     }
 }
