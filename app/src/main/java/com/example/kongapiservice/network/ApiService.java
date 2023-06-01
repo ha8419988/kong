@@ -89,8 +89,9 @@ public interface ApiService {
     @PUT("/userServices/{id}")
     Call<CategoryListResponse> editProfile(@Path("id") String id, @Body EditProfileRequest request);
 
+    @Multipart
     @POST("/productServices/upload/image")
-    Call<ImageResponse> postImage(@Body RequestBody image);
+    Call<ImageResponse> postImage(@Part MultipartBody.Part image);
 
 
 }

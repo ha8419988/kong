@@ -61,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
     private String filePath;
     private InputStream imageStream;
 
-    private MultipartBody.Builder builder;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
         setSupportActionBar(binding.appBarMain.toolbar);
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
@@ -101,23 +98,17 @@ public class MainActivity extends AppCompatActivity {
         filePath = RealPathUtil.getRealPath(this, selectedImage);
 
         File file = new File(filePath);
-        Bitmap bmp = BitmapFactory.decodeFile(filePath);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 30, bos);
-
-        builder.addFormDataPart("file", file.getName(), RequestBody.create(MultipartBody.FORM, bos.toByteArray()));
-        RequestBody requestBody = builder.build();
 
 
         RequestBody requestFile =
                 null;
 
-        requestFile = RequestBody.create( MediaType.parse("image/*"),file);
+        requestFile = RequestBody.create(file, MediaType.parse("*/*"));
         MultipartBody.Part body =
                 MultipartBody.Part.createFormData("file", "file", requestFile);
 
 
-        Call<ImageResponse> call = ApiService.apiService.postImage(requestBody);
+        Call<ImageResponse> call = ApiService.apiService.postImage(body);
         call.enqueue(new Callback<ImageResponse>() {
             @Override
             public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
