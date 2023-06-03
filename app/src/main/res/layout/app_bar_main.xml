@@ -21,28 +21,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_main" />
-    <ImageView
-        android:id="@+id/imgAvatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:layout_marginHorizontal="300dp"
-        android:src="@drawable/ic_baseline_arrow_back_24" />
-    <ImageView
-        android:id="@+id/upLoad"
-        android:layout_width="wrap_content"
-        android:layout_height="34dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginHorizontal="100dp"
-        android:src="@drawable/ic_baseline_arrow_back_24" />
 
-    <ImageView
-        android:id="@+id/fab"
-        android:layout_width="40dp"
-        android:layout_height="36dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        app:srcCompat="@drawable/add" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

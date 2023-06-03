@@ -2,55 +2,68 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     app:cardElevation="4dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_marginTop="20dp"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/tvTitleRemove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:hint="Bạn có muốn xoá *Item  này không"
+            android:inputType="text"
+            android:textColorHint="@color/colorPrimary"
+            android:textSize="34sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            <Button
-                android:id="@+id/btnEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/btnCancel"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_style_sign_in"
+                android:background="@color/gray"
+                android:gravity="center"
                 android:shadowColor="@android:color/black"
-                android:text="Sửa thư mục"
+                android:text="HUỶ"
                 android:textColor="@android:color/white" />
 
-            <View
-                android:background="@color/black"
-                android:layout_width="match_parent"
-                android:layout_height="1dp" />
-
-            <Button
-                android:layout_gravity="center"
+            <TextView
                 android:id="@+id/btnRemove"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/custom_btn_remove"
+                android:background="@color/red"
+                android:gravity="center"
                 android:shadowColor="@android:color/black"
-                android:text="Xoá"
+                android:text="XOÁ"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>

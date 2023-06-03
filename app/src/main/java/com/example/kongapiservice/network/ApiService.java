@@ -8,6 +8,8 @@ import com.example.kongapiservice.network.request.EditProfileRequest;
 import com.example.kongapiservice.network.request.ImageRequest;
 import com.example.kongapiservice.network.request.LoginRequest;
 import com.example.kongapiservice.network.reponse.LogInResponse;
+import com.example.kongapiservice.network.request.NewCategoryRequest;
+import com.example.kongapiservice.network.request.NewProductRequest;
 import com.example.kongapiservice.network.request.RegisterRequest;
 
 import java.io.IOException;
@@ -29,6 +31,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -46,27 +49,22 @@ public interface ApiService {
     OkHttpClient.Builder okBuilder = new OkHttpClient.Builder()
             .readTimeout(30, TimeUnit.SECONDS)
             .connectTimeout(30, TimeUnit.SECONDS)
-
-            .retryOnConnectionFailure(true).addInterceptor(new Interceptor() {
-                @NonNull
-                @Override
-                public Response intercept(@NonNull Chain chain) throws IOException {
-                    Request.Builder newRequest = chain.request().newBuilder();
-
-                    newRequest.addHeader("Content-Type", "multipart/form-data;boundary=<calculated when request is sent>");
-//                    newRequest.addHeader("Content-Length", "calculated when request is sent");
-//                    newRequest.addHeader("Host", "calculated when request is sent");
-//                    newRequest.addHeader("User-Agent", getUserAgent());
-                    return chain.proceed(newRequest.build());
-
-                }
+            .retryOnConnectionFailure(true).addInterceptor(chain -> {
+                Request.Builder newRequest = chain.request().newBuilder();
+                return chain.proceed(newRequest.build());
             })
             .addInterceptor(loggingInterCepter);
 
-    ApiService apiService = new Retrofit.Builder().baseUrl("http://172.168.10.211:8000")
+    ApiService apiService = new Retrofit.Builder().baseUrl("http://192.168.1.120:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okBuilder.build())
 
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .build()
+            .create(ApiService.class);
+    ApiService apiServiceUpload = new Retrofit.Builder().baseUrl("https://api.imgbb.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okBuilder.build())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
             .create(ApiService.class);
@@ -90,8 +88,24 @@ public interface ApiService {
     Call<CategoryListResponse> editProfile(@Path("id") String id, @Body EditProfileRequest request);
 
     @Multipart
-    @POST("/productServices/upload/image")
+    @POST("/1/upload?key=d84f65c591033db16ff03258c20dd654")
     Call<ImageResponse> postImage(@Part MultipartBody.Part image);
 
+    @POST("/productServices/category")
+    Call<CategoryListResponse> postCategory(@Body NewCategoryRequest request);
 
+    @DELETE("/productServices/category/{id}")
+    Call<ImageResponse> removeCategory(@Path("id") String idCategory);
+
+    @PUT("/productServices/category/{id}")
+    Call<ImageResponse> updateCategory(@Path("id") String idCategory,@Body NewCategoryRequest request);
+
+    @POST("/productServices")
+    Call<CategoryListResponse> postProduct(@Body NewProductRequest request);
+
+    @PUT("/productServices/{id}")
+    Call<CategoryListResponse> updateProduct(@Path("id")String id,@Body NewProductRequest request);
+
+    @DELETE("/productServices/{id}")
+    Call<CategoryListResponse> removeProduct(@Path("id")String id);
 }

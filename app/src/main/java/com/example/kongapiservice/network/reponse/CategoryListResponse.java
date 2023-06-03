@@ -9,9 +9,18 @@ public class CategoryListResponse {
     private String id;
     @SerializedName("name")
     private String name;
-
+    @SerializedName("imageURL")
+    private String imageURL;
     @SerializedName("product")
     public List<Product> product;
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public List<Product> getProduct() {
         return product;
@@ -37,10 +46,7 @@ public class CategoryListResponse {
         this.name = name;
     }
 
-    public CategoryListResponse(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+
 
     public class Product {
         @SerializedName("id")
@@ -51,6 +57,16 @@ public class CategoryListResponse {
         public String prices;
         @SerializedName("description")
         public String description;
+        @SerializedName("imageURL")
+        public String imageURL;
+
+        public String getImageURL() {
+            return imageURL;
+        }
+
+        public void setImageURL(String imageURL) {
+            this.imageURL = imageURL;
+        }
 
         public String getId() {
             return id;

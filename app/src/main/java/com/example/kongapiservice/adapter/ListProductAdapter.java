@@ -2,19 +2,19 @@ package com.example.kongapiservice.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.kongapiservice.ProductDetailActivity;
 import com.example.kongapiservice.R;
-import com.example.kongapiservice.model.ItemListProduct;
 import com.example.kongapiservice.network.reponse.CategoryListResponse;
 import com.example.kongapiservice.ui.Constant;
 
@@ -59,12 +59,20 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
     @Override
     public void onBindViewHolder(@NonNull ListProductAdapter.ListProductViewHolder holder, int position) {
         String itemName = "";
+        String urlImage = "";
+        String idCategory = "";
         if (mListProduct != null) {
             CategoryListResponse.Product itemProduct = mListProduct.get(position);
             itemName = itemProduct.getName();
+            urlImage = itemProduct.getImageURL();
+            idCategory = itemProduct.getId();
+
         } else if (mList != null) {
             CategoryListResponse itemListProduct = mList.get(position);
             itemName = itemListProduct.getName();
+            urlImage = itemListProduct.getImageURL();
+            idCategory = itemListProduct.getId();
+
             holder.clList.setOnClickListener(view -> {
                 Intent intent = new Intent(mContext, ProductDetailActivity.class);
                 intent.putExtra(Constant.ID_CATEGORY, itemListProduct.getId());
@@ -72,19 +80,21 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
                 mContext.startActivity(intent);
             });
         }
-//        holder.clList.setOnCreateContextMenuListener((contextMenu, view, contextMenuInfo) -> {
-//            contextMenu.setHeaderTitle("Chọn Hành Động");
-//            contextMenu.add(0, 0, position, Constant.UPDATE);
-//            contextMenu.add(0, 0, position, Constant.DELETE);
-////                contextMenu.
-//        });
+
         String finalItemName = itemName;
+        String finalIdCategory = idCategory;
+        String finalurlImage=urlImage;
         holder.clList.setOnLongClickListener(view -> {
-            sendNameCategory.sendName(finalItemName);
+            sendNameCategory.sendName(finalItemName, finalIdCategory,finalurlImage);
             return true;
         });
-
+        if (urlImage != null) {
+            Glide.with(mContext)
+                    .load(urlImage)
+                    .into(holder.imgItem);
+        }
         holder.tvName.setText(itemName);
+
 
     }
 
@@ -103,6 +113,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         TextView tvName;
         TextView tvDescription;
         ConstraintLayout clList;
+        ImageView imgItem;
 
 
         public ListProductViewHolder(@NonNull View itemView) {
@@ -111,6 +122,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
             tvName = itemView.findViewById(R.id.name);
             tvDescription = itemView.findViewById(R.id.des);
             clList = itemView.findViewById(R.id.clItemList);
+            imgItem = itemView.findViewById(R.id.imgItem);
 //
 //            clList.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
 //                @Override
@@ -125,6 +137,6 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
     }
 
     public interface sendNameCategory {
-        void sendName(String name);
+        void sendName(String name, String idCategory,String imgUrl);
     }
 }
