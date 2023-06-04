@@ -1,16 +1,13 @@
 package com.example.kongapiservice.ui.home;
 
 import static android.app.Activity.RESULT_OK;
-import static androidx.core.content.PermissionChecker.checkSelfPermission;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +22,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -72,38 +68,20 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
 
         adapter = new ListProductAdapter(getContext(), this);
         getApiList();
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDialogAddCategory();
-            }
-        });
-
+        binding.fab.setOnClickListener(v -> openDialogAddCategory());
         return root;
     }
 
     private void openGallery() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return;
-        }
-        if (checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(intent, PICK_IMAGE_REQUEST);
-        } else {
-            String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
-            requestPermissions(permission, PICK_IMAGE_REQUEST);
-        }
-
-
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
     private void createCategoryApi(String nameCategory) {
         filePath = RealPathUtil.getRealPath(getContext(), selectedImage);
-
         File file = new File(filePath);
-
         RequestBody requestFile =
                 null;
 
@@ -262,11 +240,9 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
             ImageView imgCategory = add_menu_layout.findViewById(R.id.imgCatgory);
             Button btnGallery = add_menu_layout.findViewById(R.id.btnSelect);
             btnGallery.setOnClickListener(v -> openGallery());
-
-
             if (bitmap != null) {
                 imgCategory.setImageBitmap(bitmap);
-            }else {
+            } else {
                 Glide.with(getContext()).load(urlImage)
                         .into(imgCategory);
             }
@@ -342,7 +318,7 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
                 throw new RuntimeException(e);
             }
             bitmap = BitmapFactory.decodeStream(imageStream);
-//            imgCategory.setImageBitmap(bitmap);
+            imgCategory.setImageBitmap(bitmap);
 
         }
     }

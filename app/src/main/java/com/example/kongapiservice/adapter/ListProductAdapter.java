@@ -61,13 +61,21 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         String itemName = "";
         String urlImage = "";
         String idCategory = "";
+        int itemPrice = 0;
+        String itemDescription = "";
         if (mListProduct != null) {
+            holder.tvPrice.setVisibility(View.VISIBLE);
+            holder.tvDescription.setVisibility(View.VISIBLE);
+
             CategoryListResponse.Product itemProduct = mListProduct.get(position);
             itemName = itemProduct.getName();
             urlImage = itemProduct.getImageURL();
             idCategory = itemProduct.getId();
-
+            itemPrice = itemProduct.getPrices();
+            itemDescription = itemProduct.getDescription();
         } else if (mList != null) {
+            holder.tvPrice.setVisibility(View.GONE);
+            holder.tvDescription.setVisibility(View.GONE);
             CategoryListResponse itemListProduct = mList.get(position);
             itemName = itemListProduct.getName();
             urlImage = itemListProduct.getImageURL();
@@ -83,11 +91,16 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
 
         String finalItemName = itemName;
         String finalIdCategory = idCategory;
-        String finalurlImage=urlImage;
+        String finalurlImage = urlImage;
         holder.clList.setOnLongClickListener(view -> {
-            sendNameCategory.sendName(finalItemName, finalIdCategory,finalurlImage);
+            sendNameCategory.sendName(finalItemName, finalIdCategory, finalurlImage);
             return true;
         });
+        if (mListProduct != null) {
+            holder.tvPrice.setText(String.valueOf(itemPrice));
+            holder.tvDescription.setText(itemDescription);
+
+        }
         if (urlImage != null) {
             Glide.with(mContext)
                     .load(urlImage)
@@ -112,6 +125,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
     public class ListProductViewHolder extends RecyclerView.ViewHolder {
         TextView tvName;
         TextView tvDescription;
+        TextView tvPrice;
         ConstraintLayout clList;
         ImageView imgItem;
 
@@ -121,6 +135,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
 
             tvName = itemView.findViewById(R.id.name);
             tvDescription = itemView.findViewById(R.id.des);
+            tvPrice = itemView.findViewById(R.id.price);
             clList = itemView.findViewById(R.id.clItemList);
             imgItem = itemView.findViewById(R.id.imgItem);
 //
@@ -137,6 +152,6 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
     }
 
     public interface sendNameCategory {
-        void sendName(String name, String idCategory,String imgUrl);
+        void sendName(String name, String idCategory, String imgUrl);
     }
 }

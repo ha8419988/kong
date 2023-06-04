@@ -6,10 +6,10 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:scaleType="fitCenter"
         android:id="@+id/imgItem"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,12 +30,23 @@
         app:layout_constraintTop_toBottomOf="@+id/imgItem" />
 
     <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="100.000"
+        android:textColor="@color/blue"
+        app:layout_constraintStart_toStartOf="@id/name"
+        app:layout_constraintTop_toBottomOf="@id/name" />
+
+    <TextView
         android:id="@+id/des"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="descripton"
         app:layout_constraintStart_toStartOf="@id/name"
-        app:layout_constraintTop_toBottomOf="@id/name" />
+        app:layout_constraintTop_toBottomOf="@id/price" />
 
     <View
         android:layout_width="match_parent"

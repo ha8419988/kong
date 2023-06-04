@@ -12,25 +12,38 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:orientation="vertical">
-
+        <TextView
+            android:textColor="@color/colorAccent"
+            android:text="Tên"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/edt_insert_Name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tên Hàng"
+            android:hint="abc"
             android:inputType="text"
             android:textColorHint="@color/colorPrimary"
             android:textSize="34sp" />
-
+        <TextView
+            android:textColor="@color/colorAccent"
+            android:text="Giá"
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/edt_insert_Price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Giá"
-            android:inputType="text"
+            android:inputType="number"
             android:textColorHint="@color/colorPrimary"
             android:textSize="34sp" />
-
+        <TextView
+            android:textColor="@color/colorAccent"
+            android:text="Mô tả"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/edt_insert_Description"
             android:layout_width="match_parent"
@@ -47,11 +60,11 @@
             android:weightSum="2">
 
             <Button
-                android:layout_marginTop="20dp"
                 android:id="@+id/btnSelect"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_style_sign_in"

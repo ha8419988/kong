@@ -11,9 +11,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.example.kongapiservice.myprofile.MyProfileActivity;
 import com.example.kongapiservice.network.ApiService;
 import com.example.kongapiservice.network.reponse.ImageResponse;
+import com.example.kongapiservice.ui.Constant;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.Nullable;
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private Uri selectedImage;
     private String filePath;
     private InputStream imageStream;
+    TextView tv_fullname, tvEmail;
+    LinearLayout lnUser;
 
 
     @Override
@@ -60,9 +66,22 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home)
                 .setOpenableLayout(drawer)
                 .build();
+        View headerView = navigationView.getHeaderView(0);//lay headerview o vitri nhat dinh
+        tv_fullname = headerView.findViewById(R.id.nameUser);
+        tvEmail = headerView.findViewById(R.id.tvEmailUser);
+        lnUser = headerView.findViewById(R.id.navUser);
+        Bundle extras = getIntent().getExtras();
+
+        tv_fullname.setText("Xin chào : " + extras.getString(Constant.USER_NAME));
+        tvEmail.setText(extras.getString(Constant.USER_NAME));
+        lnUser.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, MyProfileActivity.class);
+            startActivity(i);
+        });
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);

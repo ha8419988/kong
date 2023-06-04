@@ -21,7 +21,6 @@ public class MyProfileActivity extends AppCompatActivity {
 
     private void findViewSID() {
         imgBack = findViewById(R.id.imgBack);
-
         imgBack.setOnClickListener(view -> finish());
     }
 }

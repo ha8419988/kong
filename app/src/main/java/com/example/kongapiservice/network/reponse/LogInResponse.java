@@ -3,49 +3,34 @@ package com.example.kongapiservice.network.reponse;
 import com.google.gson.annotations.SerializedName;
 
 public class LogInResponse {
-    @SerializedName("status")
-    private int status;
-    @SerializedName("data")
-    private Data data;
+    @SerializedName("token")
+    private String token;
+    @SerializedName("email")
+    private String email;
+    @SerializedName("name")
+    private String name;
 
-    public int getStatus() {
-        return status;
+    public String getToken() {
+        return token;
     }
 
-    public Data getData() {
-        return data;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public class Data {
-        @SerializedName("token")
-        private String token;
-        @SerializedName("email")
-        private String email;
-        @SerializedName("name")
-        private String name;
+    public String getEmail() {
+        return email;
+    }
 
-        public String getToken() {
-            return token;
-        }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-        public void setToken(String token) {
-            this.token = token;
-        }
+    public String getName() {
+        return name;
+    }
 
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
+    public void setName(String name) {
+        this.name = name;
     }
 }

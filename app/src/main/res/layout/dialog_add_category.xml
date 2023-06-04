@@ -12,12 +12,17 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:orientation="vertical">
-
+        <TextView
+            android:textColor="@color/colorAccent"
+            android:text="Tên"
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/edt_insert_Name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
+            android:hint="abc"
             android:inputType="text"
             android:textColorHint="@color/colorPrimary"
             android:textSize="34sp" />

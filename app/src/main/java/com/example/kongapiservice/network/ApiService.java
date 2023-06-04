@@ -55,7 +55,7 @@ public interface ApiService {
             })
             .addInterceptor(loggingInterCepter);
 
-    ApiService apiService = new Retrofit.Builder().baseUrl("http://192.168.1.120:8000")
+    ApiService apiService = new Retrofit.Builder().baseUrl("http://192.168.1.15:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okBuilder.build())
 
@@ -98,14 +98,14 @@ public interface ApiService {
     Call<ImageResponse> removeCategory(@Path("id") String idCategory);
 
     @PUT("/productServices/category/{id}")
-    Call<ImageResponse> updateCategory(@Path("id") String idCategory,@Body NewCategoryRequest request);
+    Call<ImageResponse> updateCategory(@Path("id") String idCategory, @Body NewCategoryRequest request);
 
     @POST("/productServices")
     Call<CategoryListResponse> postProduct(@Body NewProductRequest request);
 
     @PUT("/productServices/{id}")
-    Call<CategoryListResponse> updateProduct(@Path("id")String id,@Body NewProductRequest request);
+    Call<CategoryListResponse> updateProduct(@Path("id") String id, @Body NewProductRequest request);
 
     @DELETE("/productServices/{id}")
-    Call<CategoryListResponse> removeProduct(@Path("id")String id);
+    Call<ImageResponse> removeProduct(@Path("id") String id);
 }

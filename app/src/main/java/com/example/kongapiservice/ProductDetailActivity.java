@@ -1,16 +1,11 @@
 package com.example.kongapiservice;
 
-import static androidx.core.content.PermissionChecker.checkSelfPermission;
-
-import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,21 +19,19 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.PermissionChecker;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.kongapiservice.adapter.ListProductAdapter;
 import com.example.kongapiservice.network.ApiService;
 import com.example.kongapiservice.network.reponse.CategoryListResponse;
 import com.example.kongapiservice.network.reponse.ImageResponse;
 import com.example.kongapiservice.network.request.NewCategoryRequest;
+import com.example.kongapiservice.network.request.NewProductRequest;
 import com.example.kongapiservice.ui.Constant;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.security.Permission;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,6 +51,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ListProd
     private Bitmap bitmap;
     ImageView imgCategory;
     private Uri selectedImage;
+    String idCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +72,15 @@ public class ProductDetailActivity extends AppCompatActivity implements ListProd
             addProduct();
         });
 
+
+        getApiListProduct();
+
+    }
+
+    private void getApiListProduct() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            String idCategory = extras.getString(Constant.ID_CATEGORY);
+            idCategory = extras.getString(Constant.ID_CATEGORY);
             String nameCategory = extras.getString(Constant.NAME_CATEGORY);
             tvNameCategory.setText(nameCategory);
 
@@ -115,7 +115,92 @@ public class ProductDetailActivity extends AppCompatActivity implements ListProd
     }
 
     private void addProduct() {
+        {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+            alertDialog.setTitle("Thêm mới sản phẩm");
+//            alertDialog.setMessage("Hãy điền đầy đủ thông tin");
+            LayoutInflater inflater = this.getLayoutInflater();
+            View add_menu_layout = inflater.inflate(R.layout.dialog_add_product, null);
+            alertDialog.setView(add_menu_layout);
+            Button btnOpenGallery = add_menu_layout.findViewById(R.id.btnSelect);
+            imgCategory = add_menu_layout.findViewById(R.id.imgCatgory);
+            EditText edtNameCategory = add_menu_layout.findViewById(R.id.edt_insert_Name);
+            EditText edtPrice = add_menu_layout.findViewById(R.id.edt_insert_Price);
+            EditText edtDescription = add_menu_layout.findViewById(R.id.edt_insert_Description);
+
+
+            btnOpenGallery.setOnClickListener(v -> {
+                openGallery();
+            });
+
+            alertDialog.setPositiveButton("TẠO MỚI", (dialogInterface, i) -> {
+                createCategoryApi(edtNameCategory.getText().toString(), Integer.parseInt(edtPrice.getText().toString()),
+                        edtDescription.getText().toString(), idCategory);
+                dialogInterface.dismiss();
+            });
+            alertDialog.setNegativeButton("HUỶ", (dialogInterface, i) -> dialogInterface.dismiss());
+            alertDialog.show();
+
+        }
+
     }
+
+    private void createCategoryApi(String nameCategory, int price, String description, String categoryId) {
+        addNewProduct(nameCategory, price, description,"https://i.ibb.co/7zw5gFH/977ba33de48d.png", categoryId);
+
+//        filePath = RealPathUtil.getRealPath(this, selectedImage);
+//
+//        File file = new File(filePath);
+//
+//        RequestBody requestFile =
+//                null;
+//
+//        requestFile = RequestBody.create(file, MediaType.parse("multipart/form-data"));
+//        MultipartBody.Part body =
+//                MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+//
+//
+//        Call<ImageResponse> call = ApiService.apiServiceUpload.postImage(body);
+//        call.enqueue(new Callback<ImageResponse>() {
+//            @Override
+//            public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
+//                if (response.body() != null && !Objects.equals(nameCategory, "")) {
+//                } else {
+//                    Log.d("AAA", " fail up anh----");
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ImageResponse> call, Throwable t) {
+//                Log.d("AAA", t.getLocalizedMessage() + " throw----");
+//
+//            }
+//        });
+    }
+
+    private void addNewProduct(String nameProduct, int price, String description, String imgURl, String categoryId) {
+        Call<CategoryListResponse> call = ApiService.apiService.postProduct(new NewProductRequest(nameProduct, price, description, imgURl, categoryId));
+        call.enqueue(new Callback<CategoryListResponse>() {
+            @Override
+            public void onResponse(Call<CategoryListResponse> call, Response<CategoryListResponse> response) {
+                if (response.body() != null) {
+                    Toast.makeText(ProductDetailActivity.this, "THANH CONG PRODUCT", Toast.LENGTH_SHORT).show();
+                    getApiListProduct();
+                } else {
+                    Log.d("AAA", " fail tao category----");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryListResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
 
     private void uploadImage() {
         Intent intent = new Intent();
@@ -128,16 +213,45 @@ public class ProductDetailActivity extends AppCompatActivity implements ListProd
 
     @Override
     public void sendName(String name, String idCategory, String urlImage) {
-
+        openModify(name, idCategory, urlImage);
     }
 
-    
+    private void openModify(String nameItem, String idCategory, String urlImage) {
+        {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+            LayoutInflater inflater = this.getLayoutInflater();
+            View add_menu_layout = inflater.inflate(R.layout.popup_edit, null);
+
+            Button btnEdit = add_menu_layout.findViewById(R.id.btnEdit);
+            Button btnRemove = add_menu_layout.findViewById(R.id.btnRemove);
+            alertDialog.setView(add_menu_layout);
+
+            Dialog dialog = alertDialog.create();
+
+            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.55);
+            int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.3);
+
+            dialog.show();
+            dialog.getWindow().setLayout(width, height);
+            btnEdit.setOnClickListener(view -> {
+                openDialogEdit(nameItem, urlImage, idCategory);
+                dialog.dismiss();
+            });
+            btnRemove.setOnClickListener(view -> {
+                openDialogRemoveItem(nameItem, idCategory);
+                dialog.dismiss();
+            });
+        }
+    }
+
+
     private void openDialogAddCategory() {
         {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
             alertDialog.setTitle("Thêm mới sản phẩm");
-            alertDialog.setMessage("Hãy điền đầy đủ thông tin");
+//            alertDialog.setMessage("Hãy điền đầy đủ thông tin");
             LayoutInflater inflater = this.getLayoutInflater();
             View add_menu_layout = inflater.inflate(R.layout.dialog_add_product, null);
             alertDialog.setView(add_menu_layout);
@@ -176,10 +290,12 @@ public class ProductDetailActivity extends AppCompatActivity implements ListProd
 
             alertDialog.setTitle("Sửa mục thời trang");
             LayoutInflater inflater = this.getLayoutInflater();
-            View add_menu_layout = inflater.inflate(R.layout.add_new_menu, null);
+            View add_menu_layout = inflater.inflate(R.layout.dialog_add_product, null);
             alertDialog.setView(add_menu_layout);
 
             EditText edtNameItem = add_menu_layout.findViewById(R.id.edt_insert_Name);
+            EditText edtNamePrice = add_menu_layout.findViewById(R.id.edt_insert_Price);
+            EditText edtNameDescription = add_menu_layout.findViewById(R.id.edt_insert_Description);
             ImageView imgCategory = add_menu_layout.findViewById(R.id.imgCatgory);
             Button btnGallery = add_menu_layout.findViewById(R.id.btnSelect);
             btnGallery.setOnClickListener(v -> openGallery());
@@ -193,6 +309,8 @@ public class ProductDetailActivity extends AppCompatActivity implements ListProd
 //            }
 
             edtNameItem.setText(name);
+            edtNamePrice.setText("gia");
+            edtNameDescription.setText("mo ta");
             alertDialog.setPositiveButton("CẬP NHẬP", (dialogInterface, i) -> {
                 Call<ImageResponse> call = ApiService.apiService.updateCategory(idCategory,
                         new NewCategoryRequest(edtNameItem.getText().toString(), urlImage));
@@ -205,23 +323,21 @@ public class ProductDetailActivity extends AppCompatActivity implements ListProd
     }
 
     private void openGallery() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return;
-        }
-        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+//        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
-        } else {
-            String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
-            requestPermissions(permission, PICK_IMAGE_REQUEST);
-        }
+//        } else {
+//            String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
+//            requestPermissions(permission, PICK_IMAGE_REQUEST);
+//        }
 
 
     }
 
-    private void openDialogRemoveItem(String name, String idCategory) {
+    private void openDialogRemoveItem(String name, String idProduct) {
         {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
@@ -238,7 +354,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ListProd
             tvBtnRemove.setOnClickListener(v -> {
                 dialog.dismiss();
 
-                Call<ImageResponse> call = ApiService.apiService.removeCategory(idCategory);
+                Call<ImageResponse> call = ApiService.apiService.removeProduct(idProduct);
                 call.enqueue(new Callback<ImageResponse>() {
                     @Override
                     public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
@@ -274,7 +390,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ListProd
                 throw new RuntimeException(e);
             }
             bitmap = BitmapFactory.decodeStream(imageStream);
-//            imgCategory.setImageBitmap(bitmap);
+            imgCategory.setImageBitmap(bitmap);
 
         }
     }

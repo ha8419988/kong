@@ -1,26 +1,28 @@
 package com.example.kongapiservice;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.kongapiservice.network.ApiService;
 import com.example.kongapiservice.network.reponse.LogInResponse;
 import com.example.kongapiservice.network.request.LoginRequest;
 import com.example.kongapiservice.register.RegisterActivity;
+import com.example.kongapiservice.ui.Constant;
+
+import java.io.Serializable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements Serializable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +41,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
         btnLogin.setOnClickListener(view -> {
-//            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-
-            Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest("hoanganh84981@example.com", "11111111"));
+            Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest("hoanganh8498@gmail.com", "11111111"));
             call.enqueue(new Callback<LogInResponse>() {
                 @Override
                 public void onResponse(Call<LogInResponse> call, Response<LogInResponse> response) {
                     if (response.raw().code() == 200) {
                         new Handler().postDelayed(() ->
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class)), 500);
+                                        login(response.body())
+                                , 500);
                     }
                 }
 
@@ -62,5 +63,12 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
+    }
+
+    private void login(LogInResponse response) {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.putExtra(Constant.USER_NAME, response.getName());
+        intent.putExtra(Constant.USER_EMAIL, response.getEmail());
+        startActivity(intent);
     }
 }
