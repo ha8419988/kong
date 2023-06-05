@@ -270,7 +270,7 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
             TextView tvTitleRemove = add_menu_layout.findViewById(R.id.tvTitleRemove);
             TextView tvBtnCancel = add_menu_layout.findViewById(R.id.btnCancel);
             TextView tvBtnRemove = add_menu_layout.findViewById(R.id.btnRemove);
-            tvTitleRemove.setText("Bạn có chắc xoá " + name + "không");
+            tvTitleRemove.setText("Bạn có chắc xoá " + name + " không");
             Dialog dialog = alertDialog.create();
             tvBtnCancel.setOnClickListener(v -> dialog.dismiss());
             tvBtnRemove.setOnClickListener(v -> {
