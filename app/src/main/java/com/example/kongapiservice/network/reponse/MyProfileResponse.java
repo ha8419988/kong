@@ -2,9 +2,9 @@ package com.example.kongapiservice.network.reponse;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LogInResponse {
-    @SerializedName("token")
-    private String token;
+public class MyProfileResponse {
+    @SerializedName("avatarUrl")
+    private String avatarUrl;
     @SerializedName("email")
     private String email;
     @SerializedName("name")
@@ -12,20 +12,19 @@ public class LogInResponse {
     @SerializedName("id")
     private String id;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
+    public MyProfileResponse(String avatarUrl, String email, String name, String id) {
+        this.avatarUrl = avatarUrl;
+        this.email = email;
+        this.name = name;
         this.id = id;
     }
 
-    public String getToken() {
-        return token;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getEmail() {
@@ -42,5 +41,13 @@ public class LogInResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

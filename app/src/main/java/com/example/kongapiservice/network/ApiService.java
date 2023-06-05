@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.example.kongapiservice.network.reponse.CategoryListResponse;
 import com.example.kongapiservice.network.reponse.ImageResponse;
+import com.example.kongapiservice.network.reponse.MyProfileResponse;
 import com.example.kongapiservice.network.request.EditProfileRequest;
 import com.example.kongapiservice.network.request.ImageRequest;
 import com.example.kongapiservice.network.request.LoginRequest;
@@ -55,7 +56,7 @@ public interface ApiService {
             })
             .addInterceptor(loggingInterCepter);
 
-    ApiService apiService = new Retrofit.Builder().baseUrl("http://192.168.1.15:8000")
+    ApiService apiService = new Retrofit.Builder().baseUrl("http://192.168.1.120:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okBuilder.build())
 
@@ -82,7 +83,7 @@ public interface ApiService {
     Call<CategoryListResponse> getCategoryDetail(@Path("id") String id);
 
     @GET("/userServices/{id}")
-    Call<CategoryListResponse> getProfile(@Path("id") String id);
+    Call<MyProfileResponse> getProfile(@Path("id") String id);
 
     @PUT("/userServices/{id}")
     Call<CategoryListResponse> editProfile(@Path("id") String id, @Body EditProfileRequest request);

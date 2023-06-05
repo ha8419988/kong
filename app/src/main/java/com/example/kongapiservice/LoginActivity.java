@@ -1,6 +1,7 @@
 package com.example.kongapiservice;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Button;
@@ -41,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements Serializable {
 
 
         btnLogin.setOnClickListener(view -> {
-            Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest("hoanganh8498@gmail.com", "11111111"));
+            Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest("hoanganh84981@example.com", "11111111"));
             call.enqueue(new Callback<LogInResponse>() {
                 @Override
                 public void onResponse(Call<LogInResponse> call, Response<LogInResponse> response) {
@@ -69,6 +70,9 @@ public class LoginActivity extends AppCompatActivity implements Serializable {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra(Constant.USER_NAME, response.getName());
         intent.putExtra(Constant.USER_EMAIL, response.getEmail());
+        SharedPreferences.Editor editor = getSharedPreferences(Constant.SHARED_PREFERENCES, MODE_PRIVATE).edit();
+        editor.putString(Constant.ID_USER, response.getId());
+        editor.apply();
         startActivity(intent);
     }
 }

@@ -2,6 +2,8 @@ package com.example.kongapiservice.ui;
 
 public class Constant {
     public static final String ID_CATEGORY = "idCategory";
+    public static final String SHARED_PREFERENCES = "SHARED_PREFERENCES";
+    public static final String ID_USER = "ID_USER";
     public static final String USER_NAME = "USER_NAME";
     public static final String USER_EMAIL = "USER_EMAIL";
     public static final String NAME_CATEGORY = "nameCategory";
