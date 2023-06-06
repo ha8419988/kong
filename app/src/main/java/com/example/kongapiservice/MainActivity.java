@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
         lnUser = headerView.findViewById(R.id.navUser);
         Bundle extras = getIntent().getExtras();
 
-        tv_fullname.setText("Xin chào : " + extras.getString(Constant.USER_NAME));
-        tvEmail.setText(extras.getString(Constant.USER_NAME));
+//        tv_fullname.setText("Xin chào : " + extras.getString(Constant.USER_NAME));
+//        tvEmail.setText(extras.getString(Constant.USER_NAME));
         lnUser.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, MyProfileActivity.class);
             startActivity(i);
