@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
             tvEmail.setText(extras.getString(Constant.USER_NAME));
         }
 
+//        tv_fullname.setText("Xin chào : " + extras.getString(Constant.USER_NAME));
+//        tvEmail.setText(extras.getString(Constant.USER_NAME));
         lnUser.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, MyProfileActivity.class);
             startActivity(i);
