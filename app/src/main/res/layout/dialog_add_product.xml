@@ -1,87 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     app:cardElevation="4dp">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:orientation="vertical">
-        <TextView
-            android:textColor="@color/colorAccent"
-            android:text="Tên"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <EditText
-            android:id="@+id/edt_insert_Name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="abc"
-            android:inputType="text"
-            android:textColorHint="@color/colorPrimary"
-            android:textSize="34sp" />
-        <TextView
-            android:textColor="@color/colorAccent"
-            android:text="Giá"
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <EditText
-            android:id="@+id/edt_insert_Price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Giá"
-            android:inputType="number"
-            android:textColorHint="@color/colorPrimary"
-            android:textSize="34sp" />
-        <TextView
-            android:textColor="@color/colorAccent"
-            android:text="Mô tả"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <EditText
-            android:id="@+id/edt_insert_Description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Mô tả"
-            android:inputType="text"
-            android:textColorHint="@color/colorPrimary"
-            android:textSize="34sp" />
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:layout_margin="20dp"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btnSelect"
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_style_sign_in"
-                android:shadowColor="@android:color/black"
-                android:text="Chọn Ảnh"
-                android:textColor="@android:color/white" />
+                android:text="Tên"
+                android:textColor="@color/colorAccent" />
 
+            <EditText
+                android:id="@+id/edt_insert_Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="abc"
+                android:inputType="text"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="34sp" />
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Giá"
+                android:textColor="@color/colorAccent" />
+
+            <EditText
+                android:id="@+id/edt_insert_Price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Giá"
+                android:inputType="number"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="34sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mô tả"
+                android:textColor="@color/colorAccent" />
+
+            <EditText
+                android:id="@+id/edt_insert_Description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mô tả"
+                android:inputType="text"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="34sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btnSelect"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style_sign_in"
+                    android:shadowColor="@android:color/black"
+                    android:text="Chọn Ảnh"
+                    android:textColor="@android:color/white" />
+
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imgCatgory"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:scaleType="fitCenter" />
 
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/imgCatgory"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:scaleType="fitCenter" />
-
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.cardview.widget.CardView>

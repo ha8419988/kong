@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.LinearLayout;
@@ -20,7 +21,9 @@ import com.example.kongapiservice.network.reponse.ImageResponse;
 import com.example.kongapiservice.ui.Constant;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -41,7 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_home)
                 .setOpenableLayout(drawer)
                 .build();
+
+
         View headerView = navigationView.getHeaderView(0);//lay headerview o vitri nhat dinh
         tv_fullname = headerView.findViewById(R.id.nameUser);
         tvEmail = headerView.findViewById(R.id.tvEmailUser);
@@ -85,79 +90,16 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-    }
-
-    private void upLoad() {
-        filePath = RealPathUtil.getRealPath(this, selectedImage);
-
-        File file = new File(filePath);
-
-        RequestBody requestFile =
-                null;
-
-        requestFile = RequestBody.create(file, MediaType.parse("multipart/form-data"));
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData("image", file.getName(), requestFile);
-
-
-        Call<ImageResponse> call = ApiService.apiServiceUpload.postImage(body);
-        call.enqueue(new Callback<ImageResponse>() {
-            @Override
-            public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
-                if (response.body() != null) {
-
-                } else {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ImageResponse> call, Throwable t) {
-                Log.d("AAA", t.getLocalizedMessage() + " throw----");
-
-            }
-        });
-    }
-
-    private void openGallery() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return;
-        }
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(intent, PICK_IMAGE_REQUEST);
-        } else {
-            String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
-            requestPermissions(permission, PICK_IMAGE_REQUEST);
-        }
-
+        navigationView.setNavigationItemSelectedListener(this);
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            selectedImage = data.getData();
-            final Uri imageUri = data.getData();
-            try {
-                imageStream = getContentResolver().openInputStream(imageUri);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-        }
-    }
-
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -167,4 +109,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_logout) {
+            finish();
+        }
+
+        return true;
+    }
 }

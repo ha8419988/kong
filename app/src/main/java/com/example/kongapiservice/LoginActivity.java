@@ -39,10 +39,11 @@ public class LoginActivity extends AppCompatActivity implements Serializable {
         Button btnLogin = findViewById(R.id.btnLogin);
         String textUser = edtUser.getText().toString();
         String textPass = edtUser.getText().toString();
-
-
+//        hoanganh84981@example.com
+//        11111111
         btnLogin.setOnClickListener(view -> {
-            Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest("hoanganh84981@example.com", "11111111"));
+            Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest(edtUser.getText().toString(),
+                    edtPass.getText().toString()));
             call.enqueue(new Callback<LogInResponse>() {
                 @Override
                 public void onResponse(Call<LogInResponse> call, Response<LogInResponse> response) {
@@ -55,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements Serializable {
 
                 @Override
                 public void onFailure(Call<LogInResponse> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 //                    Log.d("AAAA", t.getLocalizedMessage());
                 }
             });

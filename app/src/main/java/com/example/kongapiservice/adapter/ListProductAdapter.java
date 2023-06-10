@@ -63,6 +63,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         String idCategory = "";
         int itemPrice = 0;
         String itemDescription = "";
+        String idProduct = "";
         if (mListProduct != null) {
             holder.tvPrice.setVisibility(View.VISIBLE);
             holder.tvDescription.setVisibility(View.VISIBLE);
@@ -70,9 +71,10 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
             CategoryListResponse.Product itemProduct = mListProduct.get(position);
             itemName = itemProduct.getName();
             urlImage = itemProduct.getImageURL();
-            idCategory = itemProduct.getId();
+            idProduct = itemProduct.getId();
             itemPrice = itemProduct.getPrices();
             itemDescription = itemProduct.getDescription();
+
         } else if (mList != null) {
             holder.tvPrice.setVisibility(View.GONE);
             holder.tvDescription.setVisibility(View.GONE);
@@ -92,8 +94,13 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         String finalItemName = itemName;
         String finalIdCategory = idCategory;
         String finalurlImage = urlImage;
+        String finalIdProduct = idProduct;
+        int finalPrices = itemPrice;
+        String finalDescription = itemDescription;
+
         holder.clList.setOnLongClickListener(view -> {
-            sendNameCategory.sendName(finalItemName, finalIdCategory, finalurlImage);
+            sendNameCategory.sendName(finalItemName, finalIdCategory, finalurlImage, finalIdProduct,
+                    finalPrices, finalDescription);
             return true;
         });
         if (mListProduct != null) {
@@ -152,6 +159,8 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
     }
 
     public interface sendNameCategory {
-        void sendName(String name, String idCategory, String imgUrl);
+        void sendName(String name, String idCategory, String imgUrl, String idProduct
+                , int Price, String description);
+
     }
 }

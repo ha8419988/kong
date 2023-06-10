@@ -55,10 +55,13 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
     private ListProductAdapter adapter;
     private CategoryListResponse response;
     private final int PICK_IMAGE_REQUEST = 71;
-    private Uri selectedImage;
+    private final int PICK_IMAGE_EDIT_REQUEST = 72;
+    private Uri selectedImage, selectEditImage;
     private String filePath;
     private InputStream imageStream;
+    ImageView imgCategoryEdit;
     private Bitmap bitmap;
+    private Bitmap bitmapEdit;
     ImageView imgCategory;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,19 +75,20 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
         return root;
     }
 
-    private void openGallery() {
+    private void openGallery(int pickImageRequest) {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        startActivityForResult(intent, pickImageRequest);
     }
 
     private void createCategoryApi(String nameCategory) {
+        File file = null;
         filePath = RealPathUtil.getRealPath(getContext(), selectedImage);
-        File file = new File(filePath);
-        RequestBody requestFile =
-                null;
-
+        if (filePath != null) {
+            file = new File(filePath);
+        }
+        RequestBody requestFile = null;
         requestFile = RequestBody.create(file, MediaType.parse("multipart/form-data"));
         MultipartBody.Part body =
                 MultipartBody.Part.createFormData("image", file.getName(), requestFile);
@@ -206,7 +210,7 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
 
 
             btnOpenGallery.setOnClickListener(v -> {
-                openGallery();
+                openGallery(PICK_IMAGE_REQUEST);
             });
 
             alertDialog.setPositiveButton("TẠO MỚI", new DialogInterface.OnClickListener() {
@@ -237,21 +241,82 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
             alertDialog.setView(add_menu_layout);
 
             EditText edtNameItem = add_menu_layout.findViewById(R.id.edt_insert_Name);
-            ImageView imgCategory = add_menu_layout.findViewById(R.id.imgCatgory);
+            imgCategoryEdit = add_menu_layout.findViewById(R.id.imgCatgory);
             Button btnGallery = add_menu_layout.findViewById(R.id.btnSelect);
-            btnGallery.setOnClickListener(v -> openGallery());
-            if (bitmap != null) {
-                imgCategory.setImageBitmap(bitmap);
+            btnGallery.setOnClickListener(v -> openGallery(PICK_IMAGE_EDIT_REQUEST));
+            bitmapEdit = null;
+            if (bitmapEdit != null) {
+                imgCategoryEdit.setImageBitmap(bitmapEdit);
             } else {
                 Glide.with(getContext()).load(urlImage)
-                        .into(imgCategory);
+                        .into(imgCategoryEdit);
             }
 
             edtNameItem.setText(name);
             alertDialog.setPositiveButton("CẬP NHẬP", (dialogInterface, i) -> {
-                Call<ImageResponse> call = ApiService.apiService.updateCategory(idCategory,
-                        new NewCategoryRequest(edtNameItem.getText().toString(), urlImage));
-                dialogInterface.dismiss();
+                if (bitmapEdit != null) {
+                    File file = null;
+                    filePath = RealPathUtil.getRealPath(getContext(), selectEditImage);
+                    if (filePath != null) {
+                        file = new File(filePath);
+                    }
+                    RequestBody requestFile = null;
+                    requestFile = RequestBody.create(file, MediaType.parse("multipart/form-data"));
+                    MultipartBody.Part body =
+                            MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+
+
+                    Call<ImageResponse> call = ApiService.apiServiceUpload.postImage(body);
+                    call.enqueue(new Callback<ImageResponse>() {
+                        @Override
+                        public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
+                            if (response.body() != null) {
+                                Call<ImageResponse> callApi = ApiService.apiService.updateCategory(idCategory,
+                                        new NewCategoryRequest(edtNameItem.getText().toString(), response.body().data.getUrl()));
+                                callApi.enqueue(new Callback<ImageResponse>() {
+                                    @Override
+                                    public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
+                                        getApiList();
+                                        Log.d("AAA", " update thanh cong----");
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ImageResponse> call, Throwable t) {
+                                        Log.d("AAA", " update loi----");
+                                    }
+                                });
+                            } else {
+                                Log.d("AAA", " fail up anh----");
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ImageResponse> call, Throwable t) {
+                            Log.d("AAA", t.getLocalizedMessage() + " throw----");
+
+                        }
+                    });
+                } else {
+                    Call<ImageResponse> callApi = ApiService.apiService.updateCategory(idCategory,
+                            new NewCategoryRequest(edtNameItem.getText().toString(), urlImage));
+                    callApi.enqueue(new Callback<ImageResponse>() {
+                        @Override
+                        public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
+                            getApiList();
+                            Log.d("AAA", " update thanh cong1----");
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<ImageResponse> call, Throwable t) {
+                            Log.d("AAA", " update loi----");
+                        }
+                    });
+                    dialogInterface.dismiss();
+                }
+
             });
             alertDialog.setNegativeButton("HUỶ", (dialogInterface, i) -> dialogInterface.dismiss());
             alertDialog.show();
@@ -270,20 +335,18 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
             TextView tvTitleRemove = add_menu_layout.findViewById(R.id.tvTitleRemove);
             TextView tvBtnCancel = add_menu_layout.findViewById(R.id.btnCancel);
             TextView tvBtnRemove = add_menu_layout.findViewById(R.id.btnRemove);
-            tvTitleRemove.setText("Bạn có chắc xoá " + name + "không");
+            tvTitleRemove.setText("Bạn có chắc xoá " + name + " không");
             Dialog dialog = alertDialog.create();
             tvBtnCancel.setOnClickListener(v -> dialog.dismiss());
             tvBtnRemove.setOnClickListener(v -> {
-                dialog.dismiss();
 
                 Call<ImageResponse> call = ApiService.apiService.removeCategory(idCategory);
                 call.enqueue(new Callback<ImageResponse>() {
                     @Override
                     public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
-                        if (response.body() != null) {
+                        if (response.body() == null) {
                             getApiList();
-                            Log.d("aaa", "thanh cong");
-
+                            dialog.dismiss();
                         }
 
                     }
@@ -301,7 +364,7 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
 
 
     @Override
-    public void sendName(String name, String idCategory, String urlImage) {
+    public void sendName(String name, String idCategory, String urlImage, String idProduct, int Price, String description) {
         openModify(name, idCategory, urlImage);
     }
 
@@ -319,6 +382,19 @@ public class HomeFragment extends Fragment implements ListProductAdapter.sendNam
             }
             bitmap = BitmapFactory.decodeStream(imageStream);
             imgCategory.setImageBitmap(bitmap);
+
+        }
+        if (requestCode == PICK_IMAGE_EDIT_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            selectEditImage = data.getData();
+            final Uri imageUri = data.getData();
+            try {
+                imageStream = getContext().getContentResolver().openInputStream(imageUri);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            bitmapEdit = BitmapFactory.decodeStream(imageStream);
+            imgCategoryEdit.setImageBitmap(bitmapEdit);
 
         }
     }

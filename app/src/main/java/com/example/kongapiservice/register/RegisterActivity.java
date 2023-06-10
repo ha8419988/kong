@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.kongapiservice.LoginActivity;
@@ -34,18 +35,23 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void findViewByIds() {
         Button btnRegis = findViewById(R.id.btnRegis);
+        EditText edtUserName=findViewById(R.id.inputUserName);
+        EditText edtName=findViewById(R.id.inputName);
+        EditText edtPassword=findViewById(R.id.inputPassword);
 
         btnRegis.setOnClickListener(view -> {
-            Call<LogInResponse> call = ApiService.apiService.register(new RegisterRequest("hoanganh84@example.com", "11111111", "Hoang Anh"));
+            Call<LogInResponse> call = ApiService.apiService.register(new RegisterRequest(edtUserName.getText().toString(),
+                    edtName.getText().toString(),edtPassword.getText().toString()));
             call.enqueue(new Callback<LogInResponse>() {
                 @Override
                 public void onResponse(Call<LogInResponse> call, Response<LogInResponse> response) {
-                    Toast.makeText(RegisterActivity.this, "vao r nhe", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Dang ky thanh cong", Toast.LENGTH_SHORT).show();
 
                 }
 
                 @Override
                 public void onFailure(Call<LogInResponse> call, Throwable t) {
+                    Toast.makeText(RegisterActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 
                 }
             });
