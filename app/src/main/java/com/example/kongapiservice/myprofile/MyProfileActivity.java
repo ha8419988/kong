@@ -14,7 +14,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.kongapiservice.R;
@@ -39,6 +41,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MyProfileActivity extends AppCompatActivity {
+
     ImageView imgBack, avatar;
     EditText edtName, edtMail;
     Button btnUpdate;
@@ -57,6 +60,9 @@ public class MyProfileActivity extends AppCompatActivity {
 
     private Bitmap bitmapEdit;
     String id, imageUrl;
+
+    ImageView  imgAvatar;
+    TextView tvName, tvEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +89,7 @@ public class MyProfileActivity extends AppCompatActivity {
                 edtMail.setText(response.body().getEmail());
                 imageUrl = response.body().getAvatarUrl();
                 Glide.with(MyProfileActivity.this).load(imageUrl).into(avatar);
+
             }
 
             @Override
@@ -95,11 +102,17 @@ public class MyProfileActivity extends AppCompatActivity {
 
     private void findViewSID() {
         imgBack = findViewById(R.id.imgBack);
+
         avatar = findViewById(R.id.imgAvatar);
         edtName = findViewById(R.id.edtName);
         edtMail = findViewById(R.id.edtEmail);
         btnUpdate = findViewById(R.id.btnUpdateProfile);
-        progressBar = findViewById(R.id.progressBar);
+
+
+
+
+        tvName = findViewById(R.id.name);
+        tvEmail = findViewById(R.id.email);
         imgBack.setOnClickListener(view -> finish());
 
         btnUpdate.setOnClickListener(v -> {

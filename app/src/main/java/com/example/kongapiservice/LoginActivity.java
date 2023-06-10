@@ -42,8 +42,12 @@ public class LoginActivity extends AppCompatActivity implements Serializable {
 //        hoanganh84981@example.com
 //        11111111
         btnLogin.setOnClickListener(view -> {
+
             Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest(edtUser.getText().toString(),
                     edtPass.getText().toString()));
+
+//            Call<LogInResponse> call = ApiService.apiService.login(new LoginRequest("hoanganh84981@gmail.com", "11111111"));
+
             call.enqueue(new Callback<LogInResponse>() {
                 @Override
                 public void onResponse(Call<LogInResponse> call, Response<LogInResponse> response) {

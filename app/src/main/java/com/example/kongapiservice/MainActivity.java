@@ -79,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tvEmail = headerView.findViewById(R.id.tvEmailUser);
         lnUser = headerView.findViewById(R.id.navUser);
         Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            tv_fullname.setText("Xin chào : " + extras.getString(Constant.USER_NAME));
+            tvEmail.setText(extras.getString(Constant.USER_NAME));
+        }
 
 //        tv_fullname.setText("Xin chào : " + extras.getString(Constant.USER_NAME));
 //        tvEmail.setText(extras.getString(Constant.USER_NAME));
