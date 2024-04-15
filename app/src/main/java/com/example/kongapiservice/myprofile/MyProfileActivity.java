@@ -77,14 +77,14 @@ public class MyProfileActivity extends AppCompatActivity {
 
     private void getApiProfile() {
         //"No name defined" is the default value.
-        progressBar.setVisibility(View.VISIBLE
-        );
+//        progressBar.setVisibility(View.VISIBLE
+//        );
         Call<MyProfileResponse> call = ApiService.apiService.getProfile(id);
         call.enqueue(new Callback<MyProfileResponse>() {
             @Override
             public void onResponse(Call<MyProfileResponse> call, Response<MyProfileResponse> response) {
-                progressBar.setVisibility(View.GONE
-                );
+//                progressBar.setVisibility(View.GONE
+//                );
                 edtName.setText(response.body().getName());
                 edtMail.setText(response.body().getEmail());
                 imageUrl = response.body().getAvatarUrl();
