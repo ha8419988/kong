@@ -1,9 +1,14 @@
 package com.example.kongapiservice;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.LinkAddress;
+import android.net.LinkProperties;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,18 +23,21 @@ import com.example.kongapiservice.register.RegisterActivity;
 import com.example.kongapiservice.ui.Constant;
 
 import java.io.Serializable;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements Serializable {
+   public static String ipV4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         findViewByIdS();
+        ipV4 = getIPv4Address(this);
     }
 
     private void findViewByIdS() {
@@ -69,6 +77,32 @@ public class LoginActivity extends AppCompatActivity implements Serializable {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
+    }
+
+    public static String getIPv4Address(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager != null) {
+            LinkProperties linkProperties = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                linkProperties = connectivityManager.getLinkProperties(connectivityManager.getActiveNetwork());
+            }
+
+            if (linkProperties != null) {
+                List<LinkAddress> linkAddresses = linkProperties.getLinkAddresses();
+                if (linkAddresses != null) {
+                    for (LinkAddress linkAddress : linkAddresses) {
+                        String hostAddress = linkAddress.getAddress().getHostAddress();
+                        if (hostAddress != null && hostAddress.contains(".")) {
+                            return hostAddress;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return null;
     }
 
     private void login(LogInResponse response) {

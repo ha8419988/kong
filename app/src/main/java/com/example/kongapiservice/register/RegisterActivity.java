@@ -35,18 +35,18 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void findViewByIds() {
         Button btnRegis = findViewById(R.id.btnRegis);
-        EditText edtUserName=findViewById(R.id.inputUserName);
-        EditText edtName=findViewById(R.id.inputName);
-        EditText edtPassword=findViewById(R.id.inputPassword);
+        EditText edtUserName = findViewById(R.id.inputUserName);
+        EditText edtName = findViewById(R.id.inputName);
+        EditText edtPassword = findViewById(R.id.inputPassword);
 
         btnRegis.setOnClickListener(view -> {
             Call<LogInResponse> call = ApiService.apiService.register(new RegisterRequest(edtUserName.getText().toString(),
-                    edtName.getText().toString(),edtPassword.getText().toString()));
+                    edtName.getText().toString(), edtPassword.getText().toString()));
             call.enqueue(new Callback<LogInResponse>() {
                 @Override
                 public void onResponse(Call<LogInResponse> call, Response<LogInResponse> response) {
                     Toast.makeText(RegisterActivity.this, "Dang ky thanh cong", Toast.LENGTH_SHORT).show();
-
+                    finish();
                 }
 
                 @Override

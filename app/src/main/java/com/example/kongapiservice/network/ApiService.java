@@ -1,7 +1,17 @@
 package com.example.kongapiservice.network;
 
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.LinkAddress;
+import android.net.LinkProperties;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.text.format.Formatter;
+
 import androidx.annotation.NonNull;
 
+import com.example.kongapiservice.LoginActivity;
 import com.example.kongapiservice.network.reponse.CategoryListResponse;
 import com.example.kongapiservice.network.reponse.ImageResponse;
 import com.example.kongapiservice.network.reponse.MyProfileResponse;
@@ -55,9 +65,9 @@ public interface ApiService {
                 return chain.proceed(newRequest.build());
             })
             .addInterceptor(loggingInterCepter);
-//Cong ty:      http://172.168.10.211:8000
-//Nha :    http://192.168.1.120:8000
-    ApiService apiService = new Retrofit.Builder().baseUrl("http://192.168.1.120:8000")
+    //Cong ty:      http://172.168.10.211:8000
+    //Nha :    http://192.168.1.120:8000
+    ApiService apiService = new Retrofit.Builder().baseUrl("http://" + LoginActivity.ipV4 + ":8000")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okBuilder.build())
 
