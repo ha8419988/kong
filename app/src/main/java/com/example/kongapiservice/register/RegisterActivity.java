@@ -7,18 +7,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.kongapiservice.LoginActivity;
 import com.example.kongapiservice.R;
 import com.example.kongapiservice.network.ApiService;
 import com.example.kongapiservice.network.reponse.LogInResponse;
-import com.example.kongapiservice.network.request.LoginRequest;
 import com.example.kongapiservice.network.request.RegisterRequest;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

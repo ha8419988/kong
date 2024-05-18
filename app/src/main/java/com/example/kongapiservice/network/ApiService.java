@@ -1,41 +1,23 @@
 package com.example.kongapiservice.network;
 
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.LinkAddress;
-import android.net.LinkProperties;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.text.format.Formatter;
-
-import androidx.annotation.NonNull;
-
-import com.example.kongapiservice.LoginActivity;
+import com.example.kongapiservice.login.LoginActivity;
 import com.example.kongapiservice.network.reponse.CategoryListResponse;
 import com.example.kongapiservice.network.reponse.ImageResponse;
 import com.example.kongapiservice.network.reponse.MyProfileResponse;
 import com.example.kongapiservice.network.request.EditProfileRequest;
-import com.example.kongapiservice.network.request.ImageRequest;
 import com.example.kongapiservice.network.request.LoginRequest;
 import com.example.kongapiservice.network.reponse.LogInResponse;
 import com.example.kongapiservice.network.request.NewCategoryRequest;
 import com.example.kongapiservice.network.request.NewProductRequest;
 import com.example.kongapiservice.network.request.RegisterRequest;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
-import okhttp3.Interceptor;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -44,15 +26,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
-import retrofit2.http.PartMap;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface ApiService {
     HttpLoggingInterceptor loggingInterCepter = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);

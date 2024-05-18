@@ -1,4 +1,4 @@
-package com.example.kongapiservice;
+package com.example.kongapiservice.login;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.net.LinkAddress;
 import android.net.LinkProperties;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kongapiservice.MainActivity;
+import com.example.kongapiservice.R;
 import com.example.kongapiservice.network.ApiService;
 import com.example.kongapiservice.network.reponse.LogInResponse;
 import com.example.kongapiservice.network.request.LoginRequest;
