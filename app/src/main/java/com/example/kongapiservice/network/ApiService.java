@@ -67,7 +67,8 @@ public interface ApiService {
             .addInterceptor(loggingInterCepter);
     //Cong ty:      http://172.168.10.211:8000
     //Nha :    http://192.168.1.120:8000
-    ApiService apiService = new Retrofit.Builder().baseUrl("http://" + LoginActivity.ipV4 + ":8000")
+    //http://192.168.1.187:8000
+    ApiService apiService = new Retrofit.Builder().baseUrl("http://192.168.1.187:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okBuilder.build())
 
