@@ -48,6 +48,9 @@ public class LoginActivity extends AppCompatActivity implements Serializable {
         Button btnLogin = findViewById(R.id.btnLogin);
         String textUser = edtUser.getText().toString();
         String textPass = edtUser.getText().toString();
+
+        edtUser.setText("hoanganh8498@gmail.com");
+        edtPass.setText("11111111");
 //        hoanganh84981@example.com
 //        11111111
         btnLogin.setOnClickListener(view -> {
