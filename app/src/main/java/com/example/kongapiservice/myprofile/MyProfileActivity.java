@@ -83,8 +83,8 @@ public class MyProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<MyProfileResponse>() {
             @Override
             public void onResponse(Call<MyProfileResponse> call, Response<MyProfileResponse> response) {
-                progressBar.setVisibility(View.GONE
-                );
+//                progressBar.setVisibility(View.GONE
+//                );
                 edtName.setText(response.body().getName());
                 edtMail.setText(response.body().getEmail());
                 imageUrl = response.body().getAvatarUrl();
@@ -94,8 +94,8 @@ public class MyProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MyProfileResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE
-                );
+//                progressBar.setVisibility(View.GONE
+//                );
             }
         });
     }
