@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String filePath;
     private InputStream imageStream;
     TextView tv_fullname, tvEmail;
+    ImageView imgUser;
     LinearLayout lnUser;
 
 
